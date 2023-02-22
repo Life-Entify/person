@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package v1;
+
+option go_package="./;person";
+
+message Person {
+  string _id = 1;
+  int64 person_id = 2;
+  Profile profile = 3;
+  repeated Credential credential = 4;
+  bool staff_id = 5;
+}
+message Profile {
+  string last_name = 1;
+  string first_name = 2;
+  string middle_name = 3;
+  string dob = 4;
+  string phone_number = 5;
+  string national_identity = 6;
+  string gender = 7;
+  string email = 8;
+  string occupation = 9;
+  repeated Address addresses = 10;
+}
+message Credential {
+  string password = 1;
+  string token = 2;
+  string type = 3;
+}
+message Address {
+  string street = 1;
+  string town = 2;
+  string lga = 3;
+  string nstate = 4;
+  string country = 5;
+  string _id = 6;
+}
