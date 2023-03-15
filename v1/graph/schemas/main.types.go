@@ -66,13 +66,28 @@ var PersonType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "PersonType",
 	Fields: graphql.Fields{
 		"person_id": &graphql.Field{
-			Type: graphql.String,
+			Type: graphql.Int,
 		},
 		"_id": &graphql.Field{
 			Type: graphql.String,
 		},
 		"profile": &graphql.Field{
 			Type: ProfileType,
+		},
+		"next_of_kins": &graphql.Field{
+			Type: graphql.NewList(NextOfKinType),
+		},
+	},
+})
+
+var NextOfKinType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "NextOfKin",
+	Fields: graphql.Fields{
+		"person_id": &graphql.Field{
+			Type: graphql.Int,
+		},
+		"relationship": &graphql.Field{
+			Type: graphql.String,
 		},
 	},
 })

@@ -90,6 +90,7 @@ func (db *MongoDB) FindPersons(ctx context.Context, filterObj *person.Person, pa
 				filterItems = append(filterItems, middleNameFilter)
 			}
 			if filterObj.Profile.PhoneNumber != "" {
+				//TODO:// show error when it has (+)
 				phoneFilter := bson.M{"profile.phone_number": bson.M{"$regex": primitive.Regex{Pattern: filterObj.Profile.PhoneNumber, Options: "i"}}}
 				filterItems = append(filterItems, phoneFilter)
 			}
@@ -165,6 +166,26 @@ func (db *MongoDB) FindPersonById(ctx context.Context, id primitive.ObjectID) (*
 	}
 	return &newPerson, nil
 }
+func (db *MongoDB) FindPersonsByPersonID(ctx context.Context, ids []int64) ([]*person.Person, error) {
+	client, collection := db.Connect()
+	defer MongoDisconnect(client)
+	cursor, err := collection.Find(ctx, bson.D{{Key: "person_id", Value: bson.D{{Key: "$in", Value: ids}}}})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+	var results []bson.M
+	if err = cursor.All(context.TODO(), &results); err != nil {
+		return nil, errors.Errorf(err.Error())
+	}
+	var resultPersons []*person.Person
+	for _, pt := range results {
+		var resultPerson person.Person
+		common.JSONToStruct(pt, &resultPerson)
+		resultPersons = append(resultPersons, &resultPerson)
+	}
+	return resultPersons, nil
+}
 func (db *MongoDB) FindPersonsByID(ctx context.Context, ids []primitive.ObjectID) ([]*person.Person, error) {
 	client, collection := db.Connect()
 	defer MongoDisconnect(client)
@@ -204,7 +225,7 @@ func (db *MongoDB) FindPersonProfile(ctx context.Context, _id string) ([]byte, e
 	}
 	return jsonData, nil
 }
-func (db *MongoDB) CreatePerson(ctx context.Context, profile *person.Profile, checkExistence bool) (*person.Person, error) {
+func (db *MongoDB) CreatePerson(ctx context.Context, profile *person.Profile, nextOfKins []*person.NextOfKin, checkExistence bool) (*person.Person, error) {
 	client, coll := db.Connect()
 	defer MongoDisconnect(client)
 	personId, err := db.GetNextPersonId(ctx)
@@ -224,6 +245,9 @@ func (db *MongoDB) CreatePerson(ctx context.Context, profile *person.Profile, ch
 	person := person.Person{
 		Profile:  profile,
 		PersonId: personId,
+	}
+	if nextOfKins != nil {
+		person.NextOfKins = nextOfKins
 	}
 	personByte, err := json.Marshal(&person)
 	if err != nil {
@@ -247,14 +271,17 @@ func (db *MongoDB) UpdatePerson(ctx context.Context, _id primitive.ObjectID, pro
 	client, coll := db.Connect()
 	defer MongoDisconnect(client)
 	filter := bson.D{primitive.E{Key: "_id", Value: _id}}
-	arrayFiler := options.ArrayFilters{
-		Filters: bson.A{bson.M{"x._id": "address1"}},
-	}
 	upsert := true
 	opts := options.UpdateOptions{
-		ArrayFilters: &arrayFiler,
-		Upsert:       &upsert,
+		Upsert: &upsert,
 	}
+	arrayFiler := options.ArrayFilters{}
+	errors.Errorf(profile)
+	if !reflect.ValueOf(profile.Addresses).IsZero() && len(profile.Addresses) > 0 {
+		arrayFiler.Filters = bson.A{bson.M{"x._id": profile.Addresses[0].XId}}
+		opts.ArrayFilters = &arrayFiler
+	}
+
 	var setUpdate = bson.M{}
 	var onDateInsert = bson.M{}
 
@@ -290,13 +317,9 @@ func (db *MongoDB) UpdatePerson(ctx context.Context, _id primitive.ObjectID, pro
 			}
 		}
 	}
-
 	updateData := bson.M{
 		"$set": setUpdate,
 	}
-	errors.Errorf(filter)
-	errors.Errorf(updateData)
-	errors.Errorf(opts)
 	value, err := coll.UpdateOne(ctx, filter, updateData, &opts)
 	if err != nil {
 		if strings.Contains(err.Error(), "The path 'profile.addresses' must exist") {
@@ -311,7 +334,6 @@ func (db *MongoDB) UpdatePerson(ctx context.Context, _id primitive.ObjectID, pro
 				return nil, errors.Errorf("%s => caused by $s", err.Error(), err.Error())
 			}
 		}
-
 		return nil, errors.Errorf(err.Error())
 	}
 	return value, nil

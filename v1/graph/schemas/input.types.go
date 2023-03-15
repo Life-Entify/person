@@ -8,7 +8,7 @@ var KeywordPersonInputType = graphql.NewInputObject(graphql.InputObjectConfig{
 	Name: "KeywordPersonInputType",
 	Fields: graphql.InputObjectConfigFieldMap{
 		"person_id": &graphql.InputObjectFieldConfig{
-			Type: graphql.String,
+			Type: graphql.Int,
 		},
 		"_id": &graphql.InputObjectFieldConfig{
 			Type: graphql.String,
@@ -22,13 +22,16 @@ var PersonInputType = graphql.NewInputObject(graphql.InputObjectConfig{
 	Name: "PersonInputType",
 	Fields: graphql.InputObjectConfigFieldMap{
 		"person_id": &graphql.InputObjectFieldConfig{
-			Type: graphql.String,
+			Type: graphql.Int,
 		},
 		"_id": &graphql.InputObjectFieldConfig{
 			Type: graphql.String,
 		},
 		"profile": &graphql.InputObjectFieldConfig{
 			Type: ProfileInputType,
+		},
+		"next_of_kins": &graphql.InputObjectFieldConfig{
+			Type: graphql.NewList(NextOfKinInputType),
 		},
 	},
 })
@@ -73,6 +76,18 @@ var NextOfKinInputType = graphql.NewInputObject(graphql.InputObjectConfig{
 		},
 	},
 })
+var NextOfKinMetaInputType = graphql.NewInputObject(graphql.InputObjectConfig{
+	Name: "NextOfKinMetaInputType",
+	Fields: graphql.InputObjectConfigFieldMap{
+		"relationship": &graphql.InputObjectFieldConfig{
+			Type: graphql.String,
+		},
+		"person_id": &graphql.InputObjectFieldConfig{
+			Type: graphql.Int,
+		},
+	},
+})
+
 var KeywordProfileInputType = graphql.NewInputObject(graphql.InputObjectConfig{
 	Name: "KeywordProfileInputType",
 	Fields: graphql.InputObjectConfigFieldMap{

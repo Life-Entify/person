@@ -9,7 +9,11 @@ message Person {
   int64 person_id = 2;
   Profile profile = 3;
   repeated Credential credential = 4;
-  bool staff_id = 5;
+  repeated NextOfKin next_of_kins = 5;
+}
+message NextOfKin {
+  string person_id = 1;
+  string relationship = 2;
 }
 message Profile {
   string last_name = 1;
