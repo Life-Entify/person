@@ -249,12 +249,8 @@ func (db *MongoDB) CreatePerson(ctx context.Context, profile *person.Profile, ne
 	if nextOfKins != nil {
 		person.NextOfKins = nextOfKins
 	}
-	personByte, err := json.Marshal(&person)
-	if err != nil {
-		return nil, errors.Errorf(err)
-	}
 	var jsonPerson interface{}
-	err = json.Unmarshal(personByte, &jsonPerson)
+	err = common.JSONToStruct(&person, &jsonPerson)
 	if err != nil {
 		return nil, errors.Errorf(err)
 	}
@@ -337,6 +333,16 @@ func (db *MongoDB) UpdatePerson(ctx context.Context, _id primitive.ObjectID, pro
 		return nil, errors.Errorf(err.Error())
 	}
 	return value, nil
+}
+func (db *MongoDB) SetNextOfKins(ctx context.Context, personID int64, nextOfKins []*person.NextOfKin) (*mongo.UpdateResult, error) {
+	client, coll := db.Connect()
+	defer MongoDisconnect(client)
+	filter := bson.M{"person_id": personID}
+	var jsonNoK interface{}
+	common.JSONToStruct(nextOfKins, &jsonNoK)
+	update := bson.M{"$set": bson.M{"next_of_kins": jsonNoK}}
+	result, err := coll.UpdateOne(ctx, filter, update)
+	return result, err
 }
 func (db *MongoDB) DeletePersons(ctx context.Context, _ids []primitive.ObjectID) (*mongo.DeleteResult, error) {
 	client, coll := db.Connect()

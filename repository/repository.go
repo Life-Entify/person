@@ -19,4 +19,5 @@ type Repository interface {
 	FindPersonsByPersonID(ctx context.Context, ids []int64) ([]*person.Person, error)
 	FindPersonProfile(ctx context.Context, _id string) ([]byte, error)
 	UpdatePerson(ctx context.Context, _id primitive.ObjectID, profile *person.Profile) (*mongo.UpdateResult, error)
+	SetNextOfKins(ctx context.Context, personID int64, nextOfKins []*person.NextOfKin) (*mongo.UpdateResult, error)
 }

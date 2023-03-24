@@ -12,7 +12,7 @@ message Person {
   repeated NextOfKin next_of_kins = 5;
 }
 message NextOfKin {
-  string person_id = 1;
+  int64 person_id = 1;
   string relationship = 2;
 }
 message Profile {
