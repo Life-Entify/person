@@ -214,8 +214,7 @@ func (db *MongoDB) FindPersonProfile(ctx context.Context, _id string) ([]byte, e
 		return nil, err
 	}
 	var result bson.M
-	opts := options.FindOne().SetProjection(bson.D{{Key: "profile", Value: 1}, {Key: "_id", Value: 1}, {Key: "person_id", Value: 1}})
-	err = coll.FindOne(ctx, bson.D{{Key: "_id", Value: objectId}}, opts).Decode(result)
+	err = coll.FindOne(ctx, bson.D{{Key: "_id", Value: objectId}}).Decode(result)
 	if err != nil {
 		return nil, err
 	}
@@ -271,11 +270,10 @@ func (db *MongoDB) UpdatePerson(ctx context.Context, _id primitive.ObjectID, pro
 	opts := options.UpdateOptions{
 		Upsert: &upsert,
 	}
-	arrayFiler := options.ArrayFilters{}
-	errors.Errorf(profile)
 	if !reflect.ValueOf(profile.Addresses).IsZero() && len(profile.Addresses) > 0 {
-		arrayFiler.Filters = bson.A{bson.M{"x._id": profile.Addresses[0].XId}}
-		opts.ArrayFilters = &arrayFiler
+		opts.ArrayFilters = &options.ArrayFilters{
+			Filters: bson.A{bson.M{"x._id": profile.Addresses[0].XId}},
+		}
 	}
 
 	var setUpdate = bson.M{}
@@ -325,9 +323,9 @@ func (db *MongoDB) UpdatePerson(ctx context.Context, _id primitive.ObjectID, pro
 			if err1 != nil {
 				return nil, errors.Errorf("%s => caused by $s", err1.Error(), err.Error())
 			}
-			_, err = coll.UpdateOne(ctx, filter, updateData, &opts)
+			value, err = coll.UpdateOne(ctx, filter, updateData, &opts)
 			if err != nil {
-				return nil, errors.Errorf("%s => caused by $s", err.Error(), err.Error())
+				return nil, errors.Errorf("%s => caused by %s", err.Error(), err.Error())
 			}
 		}
 		return nil, errors.Errorf(err.Error())
