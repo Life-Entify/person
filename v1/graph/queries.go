@@ -25,11 +25,23 @@ func GetPersons(resolver graphql.FieldResolveFn) *graphql.Field {
 }
 func GetPersonsByID(resolver graphql.FieldResolveFn) *graphql.Field {
 	return &graphql.Field{
-		Description: "Get Persons with search keyword",
+		Description: "Get Persons by _ids (string[])",
 		Type:        graphql.NewList(schemas.PersonType),
 		Args: graphql.FieldConfigArgument{
 			"_ids": &graphql.ArgumentConfig{
 				Type: graphql.NewList(graphql.String),
+			},
+		},
+		Resolve: resolver,
+	}
+}
+func GetPersonsByPersonID(resolver graphql.FieldResolveFn) *graphql.Field {
+	return &graphql.Field{
+		Description: "Get Persons by PersonID (person_id[])",
+		Type:        graphql.NewList(schemas.PersonType),
+		Args: graphql.FieldConfigArgument{
+			"ids": &graphql.ArgumentConfig{
+				Type: graphql.NewList(graphql.Int),
 			},
 		},
 		Resolve: resolver,
