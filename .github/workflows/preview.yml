@@ -21,8 +21,8 @@ jobs:
 
       - name: Set up Git Config
         run: |
-          git config --global user.name "chokey2nv"
-          git config --global user.email "chokey2nv@gmail.com"
+          git config --global user.name chokey2nv
+          git config --global user.email chokey2nv@yahoo.com
           pwd
 
       - name: Set Specific Origin For New Branch and Push
