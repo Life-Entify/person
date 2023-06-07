@@ -31,7 +31,7 @@ jobs:
       - name: Add Second Remote
           # git remote add repo-b https://chokey2nv:${{ secrets.GIT_PASSWORD }}@github.com/chokey2nv/vote_dapp.git
         run: |
-          git remote add repo-b https://${{ secrets.ACCESS_TOKEN }}@github.com/chokey2nv/vote_dapp.git
+          git remote add repo-b https://chokey2nv@github.com/chokey2nv/vote_dapp.git
           git remote -v
 
       - name: Fetch Repo B
@@ -40,7 +40,7 @@ jobs:
       - name: Create and Checkout Branch in Repo B
         run: |
           git checkout -b override 
-          git push --force --set-upstream https://${{ secrets.ACCESS_TOKEN }}@github.com/chokey2nv/react-checkout.git override
+          git push --force --set-upstream https://chokey2nv@github.com/chokey2nv/react-checkout.git override
 
       # git push --set-upstream repo-b override
 
