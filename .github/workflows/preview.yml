@@ -23,7 +23,7 @@ jobs:
 
       - name: Add Second Remote
         run: |
-          git remote add repo-b https://${{ secrets.ACCESS_TOKEN }}@github.com/chokey2nv/vote_dapp.git
+          git remote add repo-b https://${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/vote_dapp.git
           git remote -v
 
       - name: Fetch Repo B
