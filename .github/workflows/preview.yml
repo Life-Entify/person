@@ -1,31 +1,36 @@
-name: Create Branch in Repo B
+name: Update Repository
 
 on:
   push:
     branches:
-      - master
+      - exp
 
 jobs:
-  create-branch:
+  update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository A
+      - name: Checkout Repository
         uses: actions/checkout@v2
-        with:
-          repository: Life-Entify/person
 
       - name: Set up Git Config
         run: |
           git config --global user.name "chokey2nv"
           git config --global user.email "chokey2nv@gmail.com"
 
-      - name: Create New Branch in Repository B
+      - name: Add Second Remote
         run: |
-          git clone https://github.com/chokey2nv/react-checkout.git
-          cd react-checkout
-          git checkout -b override
-          cp -R $GITHUB_WORKSPACE/* .
-          git add .
-          git commit -m "Update from Life-Entify/person"
-          git push --quiet --set-upstream https://${{ secrets.ACCESS_TOKEN }}@github.com/chokey2nv/react-checkout.git override
+          git remote add repo-b https://chokey2nv:${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/react-checkout.git
+          git remote -v
+
+      - name: Fetch Repo B
+        run: git fetch repo-b
+
+      - name: Create and Checkout Branch in Repo B
+        run: |
+          git checkout -b override 
+          git push --set-upstream repo-b override
+
+      - name: Push to Repo B
+        run: |
+          git push repo-b override
