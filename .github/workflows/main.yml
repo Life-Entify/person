@@ -1,0 +1,34 @@
+name: Update Repository
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Git Config
+        run: |
+          git config --global user.name "chokey2nv"
+          git config --global user.email "chokey2nv@gmail.com"
+
+      - name: Checkout New Branch
+        run: |
+          git checkout -b override1
+          git add .
+          git commit -m "update from $GITHUB_REPOSITORY"
+          git branch
+
+      - name: Set Specific Origin For New Branch and Push
+        run: |
+          git remote set-url origin --push https://${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/react-checkout.git
+          git push origin override1
