@@ -1,32 +1,31 @@
-name: Update Repository
+name: Create Branch in Repo B
 
 on:
   push:
     branches:
       - master
-  pull_request:
-    types:
-      - closed
 
 jobs:
-  update:
+  create-branch:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Repository A
         uses: actions/checkout@v2
         with:
-          persist-credentials: false
-          token: ${{ secrets.PREVIEW_TOKEN }}
+          repository: Life-Entify/person
 
       - name: Set up Git Config
         run: |
-          git config --global user.name chokey2nv
-          git config --global user.email chokey2nv@yahoo.com
-          pwd
+          git config --global user.name "chokey2nv"
+          git config --global user.email "chokey2nv@gmail.com"
 
-      - name: Set Specific Origin For New Branch and Push
+      - name: Create New Branch in Repository B
         run: |
-          git checkout -b override1
-          git remote add far https://github.com/chokey2nv/react-checkout.git
-          git push --set-upstream far override1;
+          git clone https://github.com/chokey2nv/react-checkout.git
+          cd react-checkout
+          git checkout -b override
+          cp -R $GITHUB_WORKSPACE/* .
+          git add .
+          git commit -m "Update from Life-Entify/person"
+          git push --quiet --set-upstream https://${{ secrets.ACCESS_TOKEN }}@github.com/chokey2nv/react-checkout.git override
