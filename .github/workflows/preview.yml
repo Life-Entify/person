@@ -25,5 +25,4 @@ jobs:
       - name: Set Specific Origin For New Branch and Push
         run: |
           git checkout -b override1
-          git remote set-url origin --push https://chokey2nv:${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/react-checkout.git
-          git push origin override1
+          git push https://${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/react-checkout.git
