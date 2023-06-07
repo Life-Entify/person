@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - exp
+      
+permissions:
+  contents: write
 
 jobs:
   update:
@@ -26,8 +29,9 @@ jobs:
           echo ${{ secrets.GIT_PASS }}
 
       - name: Add Second Remote
+          # git remote add repo-b https://chokey2nv:${{ secrets.GIT_PASSWORD }}@github.com/chokey2nv/vote_dapp.git
         run: |
-          git remote add repo-b https://chokey2nv:${{ secrets.GIT_PASSWORD }}@github.com/chokey2nv/vote_dapp.git
+          git remote add repo-b https://${{ secrets.ACCESS_TOKEN }}@github.com/chokey2nv/vote_dapp.git
           git remote -v
 
       - name: Fetch Repo B
