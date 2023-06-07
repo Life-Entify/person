@@ -28,7 +28,7 @@ jobs:
           git commit -m "update from $GITHUB_REPOSITORY"
           git branch
 
-      # - name: Set Specific Origin For New Branch and Push
-      #   run: |
-      #     git remote set-url origin --push https://${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/react-checkout.git
-      #     git push origin override1
+      - name: Set Specific Origin For New Branch and Push
+        run: |
+          git remote set-url origin --push https://${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/react-checkout.git
+          git push origin override1
