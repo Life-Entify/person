@@ -17,6 +17,9 @@ jobs:
         run: |
           git config --global user.name "chokey2nv"
           git config --global user.email "chokey2nv@gmail.com"
+          echo ${{ secrets.ACCESS_TOKEN }}
+          echo -------
+          echo ${{ secrets.PREVIEW_TOKEN }}
 
       - name: Add Second Remote
         run: |
