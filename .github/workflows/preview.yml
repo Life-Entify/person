@@ -20,7 +20,7 @@ jobs:
 
       - name: Add Second Remote
         run: |
-          git remote add repo-b https://chokey2nv:${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/react-checkout.git
+          git remote add repo-b https://chokey2nv:${{ secrets.ACCESS_TOKEN }}@github.com/chokey2nv/react-checkout.git
           git remote -v
 
       - name: Fetch Repo B
