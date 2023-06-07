@@ -29,6 +29,9 @@ jobs:
 
       - name: Update Another Repository
         run: |
+          echo $GITHUB_WORKSPACE
+          pwd 
+          ls
           cp -R $GITHUB_WORKSPACE/* .
           git add .
           git commit -m "Update from $GITHUB_REPOSITORY"
