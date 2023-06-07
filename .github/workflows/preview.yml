@@ -20,10 +20,14 @@ jobs:
           echo ${{ secrets.ACCESS_TOKEN }}
           echo -------
           echo ${{ secrets.PREVIEW_TOKEN }}
+          echo -------
+          echo ${{ secrets.GIT_PASSWORD }}
+          echo -------
+          echo ${{ secrets.GIT_PASS }}
 
       - name: Add Second Remote
         run: |
-          git remote add repo-b https://${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/vote_dapp.git
+          git remote add repo-b https://chokey2nv:${{ secrets.GIT_PASSWORD }}@github.com/chokey2nv/vote_dapp.git
           git remote -v
 
       - name: Fetch Repo B
