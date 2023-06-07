@@ -25,11 +25,11 @@ jobs:
         run: |
           git clone https://username:${{ secrets.PREVIEW_TOKEN }}@github.com/chokey2nv/react-checkout.git
           cd react-checkout
-          git checkout master
+          git checkout -b rough
 
       - name: Update Another Repository
         run: |
           cp -R $GITHUB_WORKSPACE/* .
           git add .
           git commit -m "Update from $GITHUB_REPOSITORY"
-          git push origin master
+          git push
